@@ -9,6 +9,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
@@ -21,12 +23,12 @@ public class SecurityConfig {
         // Usuarios en memoria
 
         auth.inMemoryAuthentication()
-                .withUser("gustavo")
-                .password(new BCryptPasswordEncoder().encode("123"))
+                .withUser("admin")
+                .password(new BCryptPasswordEncoder().encode("admin"))
                 .authorities(AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_ADMIN"))
                 .and()
-                .withUser("adolfo")
-                .password(new BCryptPasswordEncoder().encode("123"))
+                .withUser("user")
+                .password(new BCryptPasswordEncoder().encode("user"))
                 .authorities(AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER"))
                 .and()
                 .passwordEncoder(new BCryptPasswordEncoder());
@@ -39,5 +41,16 @@ public class SecurityConfig {
                 .httpBasic() // Habilita el Basic Auth
                 .and()
                 .build();
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer(){
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**").allowedOrigins("*");
+
+            }
+        };
     }
 }
